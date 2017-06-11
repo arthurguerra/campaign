@@ -1,6 +1,7 @@
 import core.Application;
 import core.Campaign;
 import core.DateUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,19 @@ import static org.junit.Assert.*;
 @WebAppConfiguration
 public class CampaignServiceCreateTest {
 
+    private static final String TEST_CAMPAIGN_NAME = "testCampaign";
+
     @Autowired
     private CampaignService campaignService;
 
+    @Before
+    public void setUp() {
+        campaignService.deleteAll();
+    }
+
     @Test
     public void createCampaign() {
-        Campaign newCampaign = campaignService.create(1, new Date(), new Date());
+        Campaign newCampaign = campaignService.create(TEST_CAMPAIGN_NAME, 1, new Date(), new Date());
 
         Date dateStart = newCampaign.getDateStart();
         Date dateEnd = newCampaign.getDateEnd();
@@ -41,7 +49,7 @@ public class CampaignServiceCreateTest {
     @Test
     public void createCampaignPassingObject() {
         Date date = DateUtils.today();
-        Campaign newCampaign = campaignService.create(new Campaign(1, date, date));
+        Campaign newCampaign = campaignService.create(new Campaign(TEST_CAMPAIGN_NAME, 1, date, date));
 
         Date dateStart = newCampaign.getDateStart();
         Date dateEnd = newCampaign.getDateEnd();
@@ -66,9 +74,9 @@ public class CampaignServiceCreateTest {
         Date tomorrow = DateUtils.tomorrow();
         Date dayAfterTomorrow = DateUtils.addOneDay(tomorrow);
 
-        Campaign c1 = campaignService.create(1, yesterday, today);
-        Campaign c2 = campaignService.create(2, yesterday, tomorrow);
-        Campaign c3 = campaignService.create(2, today, today);
+        Campaign c1 = campaignService.create(TEST_CAMPAIGN_NAME + "1", 1, yesterday, today);
+        Campaign c2 = campaignService.create(TEST_CAMPAIGN_NAME + "2", 2, yesterday, tomorrow);
+        Campaign c3 = campaignService.create(TEST_CAMPAIGN_NAME + "3", 2, today, today);
 
         assertTrue(DateUtils.datesAreTheSame(c1.getDateEnd(), tomorrow)); // c1 end date was today
         assertTrue(DateUtils.datesAreTheSame(c2.getDateEnd(), dayAfterTomorrow)); // c2 end date was tomorrow

@@ -35,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class CampaignControllerTest {
 
+    private static final String TEST_CAMPAIGN_NAME = "testCampaign";
     private MockMvc mockMvc;
     private Date testDate;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -54,7 +55,7 @@ public class CampaignControllerTest {
         testDate = new Date();
         testDateStr = dateFormat.format(testDate);
 
-        Campaign testCampain = new Campaign(1, testDate, testDate);
+        Campaign testCampain = new Campaign(TEST_CAMPAIGN_NAME, 1, testDate, testDate);
         List<Campaign> campaigns = new ArrayList<>();
         campaigns.add(testCampain);
 
@@ -71,6 +72,7 @@ public class CampaignControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").isNotEmpty())
+                .andExpect(jsonPath("$[0].name", is(TEST_CAMPAIGN_NAME)))
                 .andExpect(jsonPath("$[0].teamId", is(1)))
                 .andExpect(jsonPath("$[0].dateStart", is(testDateStr)))
                 .andExpect(jsonPath("$[0].dateEnd", is(testDateStr)));
@@ -82,6 +84,7 @@ public class CampaignControllerTest {
     @Test
     public void createCampaign() throws Exception {
         String campaignJson = "{" +
+                "\"name\":\"" + TEST_CAMPAIGN_NAME + "\", " +
                 "\"teamId\":\"1\", "+
                 "\"dateStart\":\"" + testDateStr + "\", " +
                 "\"dateEnd\":\"" + testDateStr + "\"" +
@@ -118,6 +121,7 @@ public class CampaignControllerTest {
     public void updateCampaign() throws Exception {
         String campaignJson = "{" +
                 "\"id\":\"" + UUID.randomUUID() + "\"," +
+                "\"name\":\"" + TEST_CAMPAIGN_NAME + "\", " +
                 "\"teamId\":\"1\", "+
                 "\"dateStart\":\"" + testDateStr + "\", " +
                 "\"dateEnd\":\"" + testDateStr + "\"" +

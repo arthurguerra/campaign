@@ -23,15 +23,18 @@ import static org.junit.Assert.*;
 @WebAppConfiguration
 public class CampaignServiceFindAllTest {
 
+    private static final String TEST_CAMPAIGN_NAME = "testCampaign";
+
     @Autowired
     private CampaignService campaignService;
 
     @Before
     public void setUp() {
-        campaignService.create(1, DateUtils.yesterday(), DateUtils.yesterday()); // old campaign
-        campaignService.create(1, DateUtils.yesterday(), DateUtils.today());
-        campaignService.create(1, DateUtils.today(), DateUtils.tomorrow());
-        campaignService.create(1, DateUtils.tomorrow(), DateUtils.tomorrow()); // same end date as campaign 2
+        campaignService.deleteAll();
+        campaignService.create(TEST_CAMPAIGN_NAME + "1", 1, DateUtils.yesterday(), DateUtils.yesterday());
+        campaignService.create(TEST_CAMPAIGN_NAME + "2", 1, DateUtils.yesterday(), DateUtils.today());
+        campaignService.create(TEST_CAMPAIGN_NAME + "3", 1, DateUtils.today(), DateUtils.tomorrow());
+        campaignService.create(TEST_CAMPAIGN_NAME + "4", 1, DateUtils.tomorrow(), DateUtils.tomorrow());
     }
 
     @Test
@@ -39,7 +42,7 @@ public class CampaignServiceFindAllTest {
         List<Campaign> campaigns = campaignService.findAllValidCampaigns();
 
         assertNotNull(campaigns);
-        assertEquals(campaigns.size(), 3); // one campaign is old (effective date has already passed)
+        assertEquals(3, campaigns.size()); // one campaign is old (effective date has already passed)
 
         Date today = DateUtils.today();
         for (Campaign c: campaigns) {

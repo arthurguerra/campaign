@@ -22,9 +22,9 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public Campaign create(long teamId, Date dateStart, Date dateEnd) {
+    public Campaign create(String name, long teamId, Date dateStart, Date dateEnd) {
         updateCampaignsEndDate(dateEnd);
-        Campaign nc = new Campaign(teamId, dateStart, dateEnd);
+        Campaign nc = new Campaign(name, teamId, dateStart, dateEnd);
         campaigns.add(nc);
         return nc;
     }
@@ -72,8 +72,8 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public Campaign create(Campaign newCampaign) {
-        return create(newCampaign.getTeamId(), newCampaign.getDateStart(), newCampaign.getDateEnd());
+    public Campaign create(Campaign nc) {
+        return create(nc.getName(), nc.getTeamId(), nc.getDateStart(), nc.getDateEnd());
     }
 
     @Override

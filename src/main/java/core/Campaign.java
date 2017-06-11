@@ -33,8 +33,9 @@ public class Campaign {
         this.dateCreated = new Date();
     }
 
-    public Campaign(long teamId, Date dateStart, Date dateEnd) {
+    public Campaign(String name, long teamId, Date dateStart, Date dateEnd) {
         this.id = UUID.randomUUID();
+        this.name = name;
         this.teamId = teamId;
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
@@ -47,6 +48,14 @@ public class Campaign {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public long getTeamId() {

@@ -13,12 +13,13 @@ public interface CampaignService {
 
     /**
      * Creates a new campaign.
+     * @param name campaign's name
      * @param teamId favorite team's id
      * @param dateStart date when the campaign starts
      * @param dateEnd date when the campaign ends
      * @return @{@link Campaign} object just created
      */
-    Campaign create(long teamId, Date dateStart, Date dateEnd);
+    Campaign create(String name, long teamId, Date dateStart, Date dateEnd);
 
     /**
      * Creates a new campaign
