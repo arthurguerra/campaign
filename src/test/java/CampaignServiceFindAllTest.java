@@ -1,4 +1,4 @@
-import core.Application;
+import app.Application;
 import core.Campaign;
 import org.junit.Before;
 import org.junit.Test;

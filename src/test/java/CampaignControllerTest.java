@@ -1,5 +1,5 @@
+import app.Application;
 import controller.CampaignController;
-import core.Application;
 import core.Campaign;
 import org.junit.Before;
 import org.junit.Test;
