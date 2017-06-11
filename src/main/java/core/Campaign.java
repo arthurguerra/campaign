@@ -2,8 +2,8 @@ package core;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import serializer.DateDeserializer;
-import serializer.DateSerializer;
+import utils.DateDeserializer;
+import utils.DateSerializer;
 
 import java.util.Date;
 import java.util.UUID;
