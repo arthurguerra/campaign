@@ -38,16 +38,7 @@ public class DateUtils {
      * @return True, if the given date has the same year, month and day of today. False, otherwise.
      */
     public static boolean isToday(Date date) {
-        Calendar cal = Calendar.getInstance();
-        Calendar calToday = Calendar.getInstance();
-        cal.setTime(date);
-        calToday.setTime(new Date());
-
-        boolean sameYear = cal.get(Calendar.YEAR) == calToday.get(Calendar.YEAR);
-        boolean sameMonth = cal.get(Calendar.MONTH) == calToday.get(Calendar.MONTH);
-        boolean sameDay = cal.get(Calendar.DAY_OF_YEAR) == calToday.get(Calendar.DAY_OF_YEAR);
-
-        return sameYear && sameMonth && sameDay;
+        return datesAreTheSame(date, DateUtils.today());
     }
 
     /**
@@ -61,5 +52,36 @@ public class DateUtils {
         final Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, days);
         return cal.getTime();
+    }
+
+    /**
+     * Adds one day to the given date
+     * @param date date
+     * @return new date added 1 one
+     */
+    public static Date addOneDay(Date date) {
+        final Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, 1);
+        return cal.getTime();
+    }
+
+    /**
+     * Check if two dates have the same Year, Month and Day.
+     * @param date1 date
+     * @param date2 date
+     * @return True if both dates have the same year, month and day. False, otherwise.
+     */
+    public static boolean datesAreTheSame(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(date1);
+        cal2.setTime(date2);
+
+        boolean sameYear = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+        boolean sameMonth = cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH);
+        boolean sameDay = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+
+        return sameYear && sameMonth && sameDay;
     }
 }
