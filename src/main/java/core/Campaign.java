@@ -1,6 +1,7 @@
 package core;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.Date;
 
@@ -11,9 +12,11 @@ public class Campaign {
     private long id;
     private long teamId;
 
+    @JsonSerialize(using = DateSerializer.class)
     @JsonDeserialize(using = DateDeserializer.class)
     private Date dateStart;
 
+    @JsonSerialize(using = DateSerializer.class)
     @JsonDeserialize(using = DateDeserializer.class)
     private Date dateEnd;
 
