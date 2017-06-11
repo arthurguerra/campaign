@@ -1,6 +1,6 @@
+import controller.CampaignController;
 import core.Application;
 import core.Campaign;
-import core.CampaignController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
