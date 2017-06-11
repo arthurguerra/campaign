@@ -1,11 +1,13 @@
 package service.impl;
 
 import core.Campaign;
+import core.DateUtils;
 import org.springframework.stereotype.Service;
 import service.CampaignService;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the Campaign Service.
@@ -33,7 +35,11 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public List<Campaign> findAll() {
-        return campaigns;
+        Date today = DateUtils.today();
+
+        return campaigns.stream()
+                        .filter(c -> DateUtils.isToday(c.getDateEnd()) || c.getDateEnd().after(today))
+                        .collect(Collectors.toList());
     }
 
     @Override
