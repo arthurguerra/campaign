@@ -1,3 +1,5 @@
+package campaign;
+
 import app.Application;
 import core.Campaign;
 import org.junit.Before;

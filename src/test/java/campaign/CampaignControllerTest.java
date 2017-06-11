@@ -1,3 +1,5 @@
+package campaign;
+
 import app.Application;
 import controller.CampaignController;
 import core.Campaign;
