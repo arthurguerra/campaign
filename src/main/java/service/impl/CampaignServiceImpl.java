@@ -23,9 +23,42 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public Campaign create(long teamId, Date dateStart, Date dateEnd) {
+        updateCampaignsEndDate(dateEnd);
         Campaign nc = new Campaign(teamId, dateStart, dateEnd);
         campaigns.add(nc);
         return nc;
+    }
+
+    /**
+     * Updates all valid campaigns' end dates in order for none of them have the same end date as the given date.
+     * @param date date that none of the valid campaigns can be equal to.
+     */
+    private void updateCampaignsEndDate(Date date) {
+        while (true) {
+            Campaign conflictedCampaign = findOldestValidCampaignEndingOnTheSameDate(date);
+            if (conflictedCampaign == null) break;
+            Date newDateEnd = DateUtils.addOneDay(conflictedCampaign.getDateEnd());
+            conflictedCampaign.setDateEnd(newDateEnd);
+        }
+    }
+
+    /**
+     * Find the oldest valid campaign whose end date is the same of the given date.
+     * @param date date to be compared to
+     * @return The campaign that has the end date the same as the given date, if any. Null, otherwise.
+     */
+    private Campaign findOldestValidCampaignEndingOnTheSameDate(Date date) {
+        Campaign conflictedCampaign = null;
+
+        for (Campaign c : findAllValidCampaigns()) {
+            if (!DateUtils.datesAreTheSame(c.getDateEnd(), date)) continue;
+
+            if (conflictedCampaign == null || conflictedCampaign.getDateCreated().before(c.getDateCreated())) {
+                conflictedCampaign = c;
+            }
+        }
+
+        return conflictedCampaign;
     }
 
     @Override
@@ -34,7 +67,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public List<Campaign> findAll() {
+    public List<Campaign> findAllValidCampaigns() {
         Date today = DateUtils.today();
 
         return campaigns.stream()

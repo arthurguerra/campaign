@@ -36,7 +36,7 @@ public class CampaignServiceFindAllTest {
 
     @Test
     public void findAllValidCampaigns() {
-        List<Campaign> campaigns = campaignService.findAll();
+        List<Campaign> campaigns = campaignService.findAllValidCampaigns();
 
         assertNotNull(campaigns);
         assertEquals(campaigns.size(), 3); // one campaign is old (effective date has already passed)

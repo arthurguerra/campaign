@@ -21,7 +21,7 @@ public class CampaignController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Campaign> findAll() {
-        return campaignService.findAll();
+        return campaignService.findAllValidCampaigns();
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)

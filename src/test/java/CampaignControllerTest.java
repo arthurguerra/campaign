@@ -58,7 +58,7 @@ public class CampaignControllerTest {
         List<Campaign> campaigns = new ArrayList<>();
         campaigns.add(testCampain);
 
-        when(mockCampaignService.findAll()).thenReturn(campaigns);
+        when(mockCampaignService.findAllValidCampaigns()).thenReturn(campaigns);
         when(mockCampaignService.create(anyObject())).thenReturn(testCampain);
         doNothing().when(mockCampaignService).delete(anyObject());
         doNothing().when(mockCampaignService).update(anyObject());
@@ -75,8 +75,8 @@ public class CampaignControllerTest {
                 .andExpect(jsonPath("$[0].dateStart", is(testDateStr)))
                 .andExpect(jsonPath("$[0].dateEnd", is(testDateStr)));
 
-        verify(mockCampaignService, times(1)).findAll();
-        verify(mockCampaignService, only()).findAll(); // no other method was called
+        verify(mockCampaignService, times(1)).findAllValidCampaigns();
+        verify(mockCampaignService, only()).findAllValidCampaigns(); // no other method was called
     }
 
     @Test

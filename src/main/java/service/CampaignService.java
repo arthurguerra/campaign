@@ -34,7 +34,7 @@ public interface CampaignService {
      * are not listed here.
      * @return List of valid campaigns
      */
-    List<Campaign> findAll();
+    List<Campaign> findAllValidCampaigns();
 
     /**
      * Deletes all campaigns.
