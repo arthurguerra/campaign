@@ -46,4 +46,11 @@ public interface CampaignService {
      * @param uuid id of the campaign to be deleted
      */
     void delete(UUID uuid);
+
+    /**
+     * Updates a campaign with its new attributes based on its ID
+     * @param campaign that will be updated
+     *                 in order for a campaign to be updated its ID must exist
+     */
+    void update(Campaign campaign);
 }

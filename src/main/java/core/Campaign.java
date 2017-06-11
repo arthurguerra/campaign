@@ -39,6 +39,10 @@ public class Campaign {
         return id;
     }
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public long getTeamId() {
         return teamId;
     }

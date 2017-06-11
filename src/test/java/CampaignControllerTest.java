@@ -61,6 +61,7 @@ public class CampaignControllerTest {
         when(mockCampaignService.findAll()).thenReturn(campaigns);
         when(mockCampaignService.create(anyObject())).thenReturn(testCampain);
         doNothing().when(mockCampaignService).delete(anyObject());
+        doNothing().when(mockCampaignService).update(anyObject());
     }
 
     @Test
@@ -109,6 +110,25 @@ public class CampaignControllerTest {
         ).andExpect(status().isNoContent());
 
         verify(mockCampaignService, times(1)).delete(notNull(UUID.class));
+        verify(mockCampaignService, only()).delete(anyObject());
+    }
+
+    @Test
+    public void updateCampaign() throws Exception {
+        String campaignJson = "{" +
+                "\"id\":\"" + UUID.randomUUID() + "\"," +
+                "\"teamId\":\"1\", "+
+                "\"dateStart\":\"" + testDateStr + "\", " +
+                "\"dateEnd\":\"" + testDateStr + "\"" +
+                "}";
+
+        mockMvc.perform(put("/campaign")
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .content(campaignJson.getBytes())
+        ).andExpect(status().isNoContent());
+
+        verify(mockCampaignService, times(1)).update(notNull(Campaign.class));
+        verify(mockCampaignService, only()).update(notNull(Campaign.class));
     }
 
 }

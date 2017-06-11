@@ -53,4 +53,9 @@ public class CampaignServiceImpl implements CampaignService {
             }
         }
     }
+
+    @Override
+    public void update(Campaign campaign) {
+
+    }
 }

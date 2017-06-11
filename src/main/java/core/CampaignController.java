@@ -35,4 +35,10 @@ public class CampaignController {
     public void deleteCampaign(@RequestParam("id") UUID id) {
         campaignService.delete(id);
     }
+
+    @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateCampaign(@RequestBody Campaign campaign) {
+        campaignService.update(campaign);
+    }
 }
