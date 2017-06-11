@@ -12,7 +12,6 @@ import org.springframework.web.context.WebApplicationContext;
 import service.CampaignService;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import static com.jayway.jsonassert.impl.matcher.IsCollectionWithSize.hasSize;
@@ -31,9 +30,9 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 public class CampaignControllerTest {
 
     private MockMvc mockMvc;
-    private long startTimestamp, endTimestamp;
     private Date testDate;
     private SimpleDateFormat dateFormat;
+    private String testDateStr;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -48,13 +47,10 @@ public class CampaignControllerTest {
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         testDate = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(testDate);
-        startTimestamp = calendar.getTimeInMillis();
-        endTimestamp = calendar.getTimeInMillis();
+        testDateStr = dateFormat.format(testDate);
 
+        campaignService.deleteAll();
         campaignService.create(1, 1, testDate, testDate);
-        campaignService.create(2, 2, testDate, testDate);
     }
 
     @Test
@@ -62,21 +58,19 @@ public class CampaignControllerTest {
         mockMvc.perform(get("/campaign/"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)))
                 .andExpect(jsonPath("$[0].teamId", is(1)))
-                .andExpect(jsonPath("$[0].dateStart", is(startTimestamp)))
-                .andExpect(jsonPath("$[0].dateEnd", is(endTimestamp)));
+                .andExpect(jsonPath("$[0].dateStart", is(testDateStr)))
+                .andExpect(jsonPath("$[0].dateEnd", is(testDateStr)));
     }
 
     @Test
     public void createCampaign() throws Exception {
-        String dateStr = dateFormat.format(testDate);
-
         String campaignJson = "{" +
                 "\"teamId\":\"1\", "+
-                "\"dateStart\":\"" + dateStr + "\", " +
-                "\"dateEnd\":\"" + dateStr + "\"" +
+                "\"dateStart\":\"" + testDateStr + "\", " +
+                "\"dateEnd\":\"" + testDateStr + "\"" +
                 "}";
 
         mockMvc.perform(post("/campaign")
@@ -86,8 +80,8 @@ public class CampaignControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.teamId", is(1)))
-                .andExpect(jsonPath("$.dateStart", is(dateStr)))
-                .andExpect(jsonPath("$.dateEnd", is(dateStr)));
+                .andExpect(jsonPath("$.dateStart", is(testDateStr)))
+                .andExpect(jsonPath("$.dateEnd", is(testDateStr)));
     }
 
 }
