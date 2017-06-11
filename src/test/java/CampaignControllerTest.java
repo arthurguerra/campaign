@@ -94,6 +94,7 @@ public class CampaignControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.teamId", is(1)))
+                .andExpect(jsonPath("$.dateCreated").isNotEmpty())
                 .andExpect(jsonPath("$.dateStart", is(testDateStr)))
                 .andExpect(jsonPath("$.dateEnd", is(testDateStr)));
 
