@@ -4,6 +4,7 @@ import core.Campaign;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Campaign service.
@@ -39,4 +40,10 @@ public interface CampaignService {
      * Deletes all campaigns.
      */
     void deleteAll();
+
+    /**
+     * Deletes a specific campaign.
+     * @param uuid id of the campaign to be deleted
+     */
+    void delete(UUID uuid);
 }

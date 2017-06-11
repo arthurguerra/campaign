@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import service.CampaignService;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Campaign controller.
@@ -27,5 +28,11 @@ public class CampaignController {
     @ResponseStatus(HttpStatus.CREATED)
     public Campaign createCampaign(@RequestBody Campaign newCampaign) {
         return campaignService.create(newCampaign);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCampaign(@RequestParam("id") UUID id) {
+        campaignService.delete(id);
     }
 }

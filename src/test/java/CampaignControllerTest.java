@@ -7,26 +7,24 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import service.CampaignService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import static com.jayway.jsonassert.impl.matcher.IsCollectionWithSize.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -42,9 +40,6 @@ public class CampaignControllerTest {
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String testDateStr;
 
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
     @Mock
     private CampaignService mockCampaignService;
 
@@ -55,7 +50,6 @@ public class CampaignControllerTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         this.mockMvc = MockMvcBuilders.standaloneSetup(campaignController).build();
-        //this.mockMvc = webAppContextSetup(webApplicationContext).build();
 
         testDate = new Date();
         testDateStr = dateFormat.format(testDate);
@@ -65,8 +59,8 @@ public class CampaignControllerTest {
         campaigns.add(testCampain);
 
         when(mockCampaignService.findAll()).thenReturn(campaigns);
-
         when(mockCampaignService.create(anyObject())).thenReturn(testCampain);
+        doNothing().when(mockCampaignService).delete(anyObject());
     }
 
     @Test
@@ -104,6 +98,17 @@ public class CampaignControllerTest {
 
         verify(mockCampaignService, times(1)).create(anyObject());
         verify(mockCampaignService, only()).create(anyObject());
+    }
+
+    @Test
+    public void deleteCampaign() throws Exception {
+        UUID id = UUID.randomUUID();
+
+        mockMvc.perform(delete("/campaign")
+                .param("id", id.toString())
+        ).andExpect(status().isNoContent());
+
+        verify(mockCampaignService, times(1)).delete(notNull(UUID.class));
     }
 
 }

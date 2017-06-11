@@ -5,9 +5,7 @@ import org.springframework.stereotype.Service;
 import service.CampaignService;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Implementation of the Campaign Service.
@@ -41,5 +39,18 @@ public class CampaignServiceImpl implements CampaignService {
     @Override
     public void deleteAll() {
         campaigns.clear();
+    }
+
+    @Override
+    public void delete(UUID uuid) {
+        Iterator<Campaign> it = campaigns.iterator();
+
+        while(it.hasNext()) {
+            Campaign c = it.next();
+            if (c.getId().equals(uuid)) {
+                it.remove();
+                break;
+            }
+        }
     }
 }
