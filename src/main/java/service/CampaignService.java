@@ -17,7 +17,7 @@ public interface CampaignService {
      * @param dateEnd date when the campaign ends
      * @return @{@link Campaign} object just created
      */
-    Campaign create(int teamId, Date dateStart, Date dateEnd);
+    Campaign create(long teamId, Date dateStart, Date dateEnd);
 
     /**
      * Finds all existing campaigns that are still valid. Campaigns already expired
