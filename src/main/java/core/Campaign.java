@@ -18,6 +18,10 @@ public class Campaign {
 
     @JsonSerialize(using = DateSerializer.class)
     @JsonDeserialize(using = DateDeserializer.class)
+    private final Date dateCreated;
+
+    @JsonSerialize(using = DateSerializer.class)
+    @JsonDeserialize(using = DateDeserializer.class)
     private Date dateStart;
 
     @JsonSerialize(using = DateSerializer.class)
@@ -26,6 +30,7 @@ public class Campaign {
 
     public Campaign() {
         // empty constructor
+        this.dateCreated = new Date();
     }
 
     public Campaign(long teamId, Date dateStart, Date dateEnd) {
@@ -33,6 +38,7 @@ public class Campaign {
         this.teamId = teamId;
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
+        this.dateCreated = new Date();
     }
 
     public UUID getId() {
@@ -65,5 +71,9 @@ public class Campaign {
 
     public void setDateEnd(Date dateEnd) {
         this.dateEnd = dateEnd;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
     }
 }
