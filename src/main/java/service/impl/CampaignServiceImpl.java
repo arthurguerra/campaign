@@ -1,6 +1,8 @@
 package service.impl;
 
 import core.Campaign;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import service.CampaignService;
 import utils.DateUtils;
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class CampaignServiceImpl implements CampaignService {
+    private static final Logger logger = LoggerFactory.getLogger(CampaignServiceImpl.class);
+
     private List<Campaign> campaigns;
 
     @PostConstruct
@@ -23,6 +27,8 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public Campaign create(String name, long teamId, Date dateStart, Date dateEnd) {
+        logger.info("Creating {}  campaign", name);
+
         updateCampaignsEndDate(dateEnd);
         Campaign nc = new Campaign(name, teamId, dateStart, dateEnd);
         campaigns.add(nc);
@@ -34,17 +40,24 @@ public class CampaignServiceImpl implements CampaignService {
      * @param date date that none of the valid campaigns can be equal to.
      */
     private void updateCampaignsEndDate(Date date) {
+        logger.info("Updating campaigns: {}", date);
+
         Date conflictedDate = date;
         Campaign lastConflictedCampaign = null;
 
         while (true) {
-            Campaign conflictedCampaign = findOldestValidCampaignEndingOnTheSameDate(conflictedDate);
+            Campaign conflictedCampaign =
+                    findOldestValidCampaignEndingOnTheSameDate(conflictedDate, lastConflictedCampaign);
 
-            if (conflictedCampaign == null || conflictedCampaign == lastConflictedCampaign) {
+            if (conflictedCampaign == null) {
+                logger.info("No more campaigns to update date. Stop.");
                 break;
             }
 
             Date newDateEnd = DateUtils.addOneDay(conflictedCampaign.getDateEnd());
+
+            logger.info("Update end date of {} to {}", conflictedCampaign, newDateEnd);
+
             conflictedCampaign.setDateEnd(newDateEnd);
 
             conflictedDate = newDateEnd;
@@ -57,15 +70,19 @@ public class CampaignServiceImpl implements CampaignService {
      * @param date date to be compared to
      * @return The campaign that has the end date the same as the given date, if any. Null, otherwise.
      */
-    private Campaign findOldestValidCampaignEndingOnTheSameDate(Date date) {
+    private Campaign findOldestValidCampaignEndingOnTheSameDate(Date date, Campaign campaignIgnore) {
+        logger.info("Find oldest valid campaign with end date: {}", date);
+
+        List<Campaign> campaignsSameDate = findAllValidCampaigns().stream()
+                .filter(c -> c != campaignIgnore)
+                .filter(c -> DateUtils.datesAreTheSame(c.getDateEnd(), date))
+                .sorted(Comparator.comparing(Campaign::getDateCreated))
+                .collect(Collectors.toList());
+
         Campaign conflictedCampaign = null;
 
-        for (Campaign c : findAllValidCampaigns()) {
-            if (!DateUtils.datesAreTheSame(c.getDateEnd(), date)) continue;
-
-            if (conflictedCampaign == null || conflictedCampaign.getDateCreated().before(c.getDateCreated())) {
-                conflictedCampaign = c;
-            }
+        if (campaignsSameDate != null && !campaignsSameDate.isEmpty()) {
+            conflictedCampaign = campaignsSameDate.get(0);
         }
 
         return conflictedCampaign;

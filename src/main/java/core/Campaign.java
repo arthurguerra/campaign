@@ -85,4 +85,9 @@ public class Campaign {
     public Date getDateCreated() {
         return dateCreated;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s - %s)", name, dateStart, dateEnd);
+    }
 }
