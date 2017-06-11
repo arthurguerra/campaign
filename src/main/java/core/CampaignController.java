@@ -1,9 +1,9 @@
 package core;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import service.CampaignService;
 
 import java.util.List;
@@ -21,5 +21,11 @@ class CampaignController {
     @RequestMapping(method = RequestMethod.GET)
     public List<Campaign> findAll() {
         return campaignService.findAll();
+    }
+
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Campaign createCampaign(@RequestBody Campaign newCampaign) {
+        return new Campaign(1, newCampaign.getTeamId(), newCampaign.getDateStart(), newCampaign.getDateEnd());
     }
 }
