@@ -26,4 +26,9 @@ public interface CampaignService {
      * @return List of valid campaigns
      */
     List<Campaign> findAll();
+
+    /**
+     * Deletes all campaigns.
+     */
+    void deleteAll();
 }

@@ -32,4 +32,9 @@ public class CampaignServiceImpl implements CampaignService {
     public List<Campaign> findAll() {
         return campaigns;
     }
+
+    @Override
+    public void deleteAll() {
+        campaigns.clear();
+    }
 }
