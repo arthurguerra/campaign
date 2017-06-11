@@ -6,12 +6,14 @@ import serializer.DateDeserializer;
 import serializer.DateSerializer;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Campaing class representation.
  */
 public class Campaign {
-    private long id;
+    private String name;
+    private UUID id;
     private long teamId;
 
     @JsonSerialize(using = DateSerializer.class)
@@ -26,19 +28,15 @@ public class Campaign {
         // empty constructor
     }
 
-    public Campaign(long id, long teamId, Date dateStart, Date dateEnd) {
-        this.id = id;
+    public Campaign(long teamId, Date dateStart, Date dateEnd) {
+        this.id = UUID.randomUUID();
         this.teamId = teamId;
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
     }
 
-    public long getId() {
+    public UUID getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public long getTeamId() {

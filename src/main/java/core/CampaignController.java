@@ -26,6 +26,6 @@ class CampaignController {
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Campaign createCampaign(@RequestBody Campaign newCampaign) {
-        return new Campaign(1, newCampaign.getTeamId(), newCampaign.getDateStart(), newCampaign.getDateEnd());
+        return new Campaign(newCampaign.getTeamId(), newCampaign.getDateStart(), newCampaign.getDateEnd());
     }
 }

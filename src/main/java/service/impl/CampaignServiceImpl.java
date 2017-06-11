@@ -22,8 +22,8 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public Campaign create(int id, int teamId, Date dateStart, Date dateEnd) {
-        Campaign nc = new Campaign(id, teamId, dateStart, dateEnd);
+    public Campaign create(int teamId, Date dateStart, Date dateEnd) {
+        Campaign nc = new Campaign(teamId, dateStart, dateEnd);
         campaigns.add(nc);
         return nc;
     }

@@ -50,7 +50,7 @@ public class CampaignControllerTest {
         testDateStr = dateFormat.format(testDate);
 
         campaignService.deleteAll();
-        campaignService.create(1, 1, testDate, testDate);
+        campaignService.create(1, testDate, testDate);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class CampaignControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].id").isNotEmpty())
                 .andExpect(jsonPath("$[0].teamId", is(1)))
                 .andExpect(jsonPath("$[0].dateStart", is(testDateStr)))
                 .andExpect(jsonPath("$[0].dateEnd", is(testDateStr)));
@@ -78,7 +78,7 @@ public class CampaignControllerTest {
                 .content(campaignJson.getBytes())
         ).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.teamId", is(1)))
                 .andExpect(jsonPath("$.dateStart", is(testDateStr)))
                 .andExpect(jsonPath("$.dateEnd", is(testDateStr)));
