@@ -1,25 +1,33 @@
 import core.Application;
+import core.Campaign;
+import core.CampaignController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import service.CampaignService;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static com.jayway.jsonassert.impl.matcher.IsCollectionWithSize.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 /**
  * Test Campaign controller.
@@ -31,26 +39,34 @@ public class CampaignControllerTest {
 
     private MockMvc mockMvc;
     private Date testDate;
-    private SimpleDateFormat dateFormat;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String testDateStr;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    private CampaignService campaignService;
+    @Mock
+    private CampaignService mockCampaignService;
+
+    @InjectMocks
+    private CampaignController campaignController;
 
     @Before
     public void setUp() {
-        this.mockMvc = webAppContextSetup(webApplicationContext).build();
-
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        MockitoAnnotations.initMocks(this);
+        this.mockMvc = MockMvcBuilders.standaloneSetup(campaignController).build();
+        //this.mockMvc = webAppContextSetup(webApplicationContext).build();
 
         testDate = new Date();
         testDateStr = dateFormat.format(testDate);
 
-        campaignService.deleteAll();
-        campaignService.create(1, testDate, testDate);
+        Campaign testCampain = new Campaign(1, testDate, testDate);
+        List<Campaign> campaigns = new ArrayList<>();
+        campaigns.add(testCampain);
+
+        when(mockCampaignService.findAll()).thenReturn(campaigns);
+
+        when(mockCampaignService.create(anyObject())).thenReturn(testCampain);
     }
 
     @Test
@@ -63,6 +79,9 @@ public class CampaignControllerTest {
                 .andExpect(jsonPath("$[0].teamId", is(1)))
                 .andExpect(jsonPath("$[0].dateStart", is(testDateStr)))
                 .andExpect(jsonPath("$[0].dateEnd", is(testDateStr)));
+
+        verify(mockCampaignService, times(1)).findAll();
+        verify(mockCampaignService, only()).findAll(); // no other method was called
     }
 
     @Test
@@ -82,6 +101,9 @@ public class CampaignControllerTest {
                 .andExpect(jsonPath("$.teamId", is(1)))
                 .andExpect(jsonPath("$.dateStart", is(testDateStr)))
                 .andExpect(jsonPath("$.dateEnd", is(testDateStr)));
+
+        verify(mockCampaignService, times(1)).create(anyObject());
+        verify(mockCampaignService, only()).create(anyObject());
     }
 
 }

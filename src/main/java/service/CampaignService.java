@@ -20,6 +20,15 @@ public interface CampaignService {
     Campaign create(long teamId, Date dateStart, Date dateEnd);
 
     /**
+     * Creates a new campaign
+     * @param newCampaign new campaign to be created
+     *                    this new campaign must not have an ID
+     *                    ID will be generated automatically
+     * @return {@link Campaign} object with an unique ID
+     */
+    Campaign create(Campaign newCampaign);
+
+    /**
      * Finds all existing campaigns that are still valid. Campaigns already expired
      * are not listed here.
      * @return List of valid campaigns

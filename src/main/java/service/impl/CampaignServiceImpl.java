@@ -29,6 +29,11 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
+    public Campaign create(Campaign newCampaign) {
+        return create(newCampaign.getTeamId(), newCampaign.getDateStart(), newCampaign.getDateEnd());
+    }
+
+    @Override
     public List<Campaign> findAll() {
         return campaigns;
     }

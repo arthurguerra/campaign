@@ -13,7 +13,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping( value = "/campaign" )
-class CampaignController {
+public class CampaignController {
 
     @Autowired
     private CampaignService campaignService;
@@ -26,6 +26,6 @@ class CampaignController {
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Campaign createCampaign(@RequestBody Campaign newCampaign) {
-        return new Campaign(newCampaign.getTeamId(), newCampaign.getDateStart(), newCampaign.getDateEnd());
+        return campaignService.create(newCampaign);
     }
 }
