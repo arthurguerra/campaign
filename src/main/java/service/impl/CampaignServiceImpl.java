@@ -34,11 +34,21 @@ public class CampaignServiceImpl implements CampaignService {
      * @param date date that none of the valid campaigns can be equal to.
      */
     private void updateCampaignsEndDate(Date date) {
+        Date conflictedDate = date;
+        Campaign lastConflictedCampaign = null;
+
         while (true) {
-            Campaign conflictedCampaign = findOldestValidCampaignEndingOnTheSameDate(date);
-            if (conflictedCampaign == null) break;
+            Campaign conflictedCampaign = findOldestValidCampaignEndingOnTheSameDate(conflictedDate);
+
+            if (conflictedCampaign == null || conflictedCampaign == lastConflictedCampaign) {
+                break;
+            }
+
             Date newDateEnd = DateUtils.addOneDay(conflictedCampaign.getDateEnd());
             conflictedCampaign.setDateEnd(newDateEnd);
+
+            conflictedDate = newDateEnd;
+            lastConflictedCampaign = conflictedCampaign;
         }
     }
 

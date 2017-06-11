@@ -64,15 +64,15 @@ public class CampaignServiceCreateTest {
         Date yesterday = DateUtils.yesterday();
         Date today = DateUtils.today();
         Date tomorrow = DateUtils.tomorrow();
+        Date dayAfterTomorrow = DateUtils.addOneDay(tomorrow);
 
-        Campaign newCampaign1 = campaignService.create(new Campaign(1, yesterday, tomorrow));
-        Campaign newCampaign2 = campaignService.create(new Campaign(2, today, tomorrow));
+        Campaign c1 = campaignService.create(1, yesterday, today);
+        Campaign c2 = campaignService.create(2, yesterday, tomorrow);
+        Campaign c3 = campaignService.create(2, today, today);
 
-        // campaign 2 will end tomorrow, but campaign 1 already ends that day, so campaign 1 has to change its
-        // end date to the day after tomorrow
+        assertTrue(DateUtils.datesAreTheSame(c1.getDateEnd(), tomorrow)); // c1 end date was today
+        assertTrue(DateUtils.datesAreTheSame(c2.getDateEnd(), dayAfterTomorrow)); // c2 end date was tomorrow
+        assertTrue(DateUtils.datesAreTheSame(c3.getDateEnd(), today)); // c3 keeps its end date as today
 
-        assertEquals(newCampaign2.getDateEnd(), tomorrow);
-        assertNotEquals(newCampaign1.getDateEnd(), tomorrow);
-        assertTrue(newCampaign1.getDateEnd().after(tomorrow));
     }
 }
