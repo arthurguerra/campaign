@@ -4,10 +4,11 @@ import core.Fan;
 import exceptions.FanAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import service.CampaignService;
 import service.FanService;
 
-import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,11 +22,13 @@ public class FanServiceImpl implements FanService {
 
     private Set<Fan> fans;
 
-    @PostConstruct
-    public void postConstruct() {
+    private final CampaignService campaignService;
+
+    @Autowired
+    public FanServiceImpl(CampaignService campaignService) {
+        this.campaignService = campaignService;
         fans = new HashSet<>();
     }
-
 
     @Override
     public Fan create(String name, String email, Date dateBirth, String team) throws FanAlreadyExistsException {

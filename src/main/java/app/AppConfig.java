@@ -14,6 +14,8 @@ import service.impl.FanServiceImpl;
 @Configuration
 public class AppConfig {
 
+    private static final CampaignService campaignService = new CampaignServiceImpl();
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer properties() {
         return new PropertySourcesPlaceholderConfigurer();
@@ -21,12 +23,12 @@ public class AppConfig {
 
     @Bean
     public static CampaignService campaignService() {
-        return new CampaignServiceImpl();
+        return campaignService;
     }
 
     @Bean
     public static FanService fanService() {
-        return new FanServiceImpl();
+        return new FanServiceImpl(campaignService);
     }
 
 }

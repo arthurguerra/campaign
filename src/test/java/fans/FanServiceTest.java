@@ -1,25 +1,33 @@
 package fans;
 
 import app.Application;
+import core.Campaign;
 import core.Fan;
+import exceptions.FanAlreadyExistsAndAlreadyHasCampaignsException;
 import exceptions.FanAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import service.CampaignService;
 import service.FanService;
+import service.impl.CampaignServiceImpl;
+import service.impl.FanServiceImpl;
 import utils.DateUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 /**
  * Test Campaign controller.
@@ -34,12 +42,21 @@ public class FanServiceTest {
     private static final String TEST_FAN_EMAIL = "johnsmith@gmail.com";
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    @Autowired
+    @Mock
+    private CampaignService campaignService = new CampaignServiceImpl();
+
     private FanService fanService;
 
     @Before
-    public void setUp() {
+    public void setUp() throws FanAlreadyExistsException {
+        fanService = new FanServiceImpl(campaignService);
+
         fanService.deleteAll();
+
+        List<Campaign> campaigns = new ArrayList<>();
+        campaigns.add(new Campaign("testCampaign", 1, DateUtils.today(), DateUtils.tomorrow()));
+        when(campaignService.findAllValidCampaigns()).thenReturn(campaigns);
+
     }
 
     @Test
@@ -55,9 +72,17 @@ public class FanServiceTest {
     }
 
     @Test(expected = FanAlreadyExistsException.class)
-    public void duplicatedFan() throws ParseException, FanAlreadyExistsException {
+    public void fanAlreadyEnrolledWithNoCampaigns() throws ParseException, FanAlreadyExistsException {
         Date dateBirth = dateFormat.parse("1994-12-12");
         fanService.create(TEST_FAN_NAME, TEST_FAN_EMAIL, dateBirth, TEST_FAN_TEAM);
         fanService.create("duplicatedFan", TEST_FAN_EMAIL, dateBirth, "Barcelona");
+    }
+
+    @Test(expected = FanAlreadyExistsAndAlreadyHasCampaignsException.class)
+    public void fanAlreadyEnrolledWithOneOrMoreCampaigns() throws ParseException, FanAlreadyExistsException {
+        Date dateBirth = dateFormat.parse("1994-12-12");
+        fanService.create(TEST_FAN_NAME, TEST_FAN_EMAIL, dateBirth, TEST_FAN_TEAM);
+        fanService.create("duplicatedFan", TEST_FAN_EMAIL, dateBirth, "Barcelona");
+
     }
 }
