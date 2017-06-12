@@ -15,7 +15,6 @@ import utils.DateUtils;
 import java.util.Date;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
 
 /**
  * Test Campaign controller.
@@ -26,11 +25,12 @@ import static junit.framework.TestCase.assertFalse;
 public class CampaignServiceUpdateTest {
 
     private static final String TEST_CAMPAIGN_NAME = "testCampaign";
+    private static final String TEST_CAMPAIGN_NAME_UPDATED = "testCampaignUPDATED";
 
     @Autowired
     private CampaignService campaignService;
 
-    private Campaign campaign;
+    private Campaign campaign, updateCampaign;
     private long expectedTeamId;
     private Date expectedDate;
 
@@ -42,17 +42,16 @@ public class CampaignServiceUpdateTest {
         expectedTeamId = 20;
         expectedDate = DateUtils.tomorrow();
 
-        campaign.setTeamId(expectedTeamId);
-        campaign.setDateStart(expectedDate);
-        campaign.setDateEnd(expectedDate);
+        updateCampaign = new Campaign(TEST_CAMPAIGN_NAME_UPDATED, expectedTeamId, expectedDate, expectedDate);
+        updateCampaign.setId(campaign.getId());
     }
 
     @Test
     public void updateCampaign() {
-        campaignService.update(campaign);
+        campaignService.update(updateCampaign);
 
         Campaign c = campaignService.findAllValidCampaigns().get(0);
-        assertFalse(c.getName().isEmpty());
+        assertEquals(TEST_CAMPAIGN_NAME_UPDATED, c.getName());
         assertEquals(expectedTeamId, c.getTeamId());
         assertEquals(expectedDate, c.getDateStart());
         assertEquals(expectedDate, c.getDateEnd());

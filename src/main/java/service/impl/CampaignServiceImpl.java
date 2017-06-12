@@ -122,6 +122,17 @@ public class CampaignServiceImpl implements CampaignService {
 
     @Override
     public void update(Campaign campaign) {
+        Iterator<Campaign> it = campaigns.iterator();
 
+        while(it.hasNext()) {
+            Campaign currCampaign = it.next();
+            if (currCampaign.getId().equals(campaign.getId())) {
+                currCampaign.setTeamId(campaign.getTeamId());
+                currCampaign.setName(campaign.getName());
+                currCampaign.setDateStart(campaign.getDateStart());
+                currCampaign.setDateEnd(campaign.getDateEnd());
+                return;
+            }
+        }
     }
 }
