@@ -10,12 +10,12 @@
     <context-param>
         <param-name>contextClass</param-name>
         <param-value>
-            org.springframework.web.context.support.Annota onCon gWebApplica onContext
+            org.springframework.web.context.support.AnnotationConfigWebApplicationContext
         </param-value>
     </context-param>
 
     <context-param>
-        <param-name>contextCon gLoca on</param-name>
+        <param-name>contextConfigLocation</param-name>
         <param-value>org.rest.spring.root</param-value>
     </context-param>
 
@@ -31,11 +31,11 @@
         <init-param>
             <param-name>contextClass</param-name>
             <param-value>
-                org.springframework.web.context.support.Annota onCon gWebApplica onContext
+                org.springframework.web.context.support.AnnotationConfigWebApplicationContext
             </param-value>
         </init-param>
         <init-param>
-            <param-name>contextCon gLoca on</param-name>
+            <param-name>contextConfigLocation</param-name>
             <param-value>org.rest.spring.rest</param-value>
         </init-param>
 
