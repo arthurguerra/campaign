@@ -63,4 +63,8 @@ public class Fan {
 
         return this.email.equals(f.getEmail());
     }
+
+    public boolean hasCampaigns() {
+        return true;
+    }
 }

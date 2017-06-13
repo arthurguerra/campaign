@@ -60,7 +60,8 @@ public class FanServiceTest {
     }
 
     @Test
-    public void createFan() throws ParseException, FanAlreadyExistsException {
+    public void createFan() throws ParseException, FanAlreadyExistsException,
+            FanAlreadyExistsAndAlreadyHasCampaignsException {
         Date dateBirth = dateFormat.parse("1980-01-01");
         Fan fan = fanService.create(TEST_FAN_NAME, TEST_FAN_EMAIL, dateBirth, TEST_FAN_TEAM);
 
@@ -72,14 +73,16 @@ public class FanServiceTest {
     }
 
     @Test(expected = FanAlreadyExistsException.class)
-    public void fanAlreadyEnrolledWithNoCampaigns() throws ParseException, FanAlreadyExistsException {
+    public void fanAlreadyEnrolledWithNoCampaigns() throws ParseException, FanAlreadyExistsException,
+            FanAlreadyExistsAndAlreadyHasCampaignsException {
         Date dateBirth = dateFormat.parse("1994-12-12");
         fanService.create(TEST_FAN_NAME, TEST_FAN_EMAIL, dateBirth, TEST_FAN_TEAM);
         fanService.create("duplicatedFan", TEST_FAN_EMAIL, dateBirth, "Barcelona");
     }
 
     @Test(expected = FanAlreadyExistsAndAlreadyHasCampaignsException.class)
-    public void fanAlreadyEnrolledWithOneOrMoreCampaigns() throws ParseException, FanAlreadyExistsException {
+    public void fanAlreadyEnrolledWithOneOrMoreCampaigns() throws ParseException, FanAlreadyExistsException,
+            FanAlreadyExistsAndAlreadyHasCampaignsException {
         Date dateBirth = dateFormat.parse("1994-12-12");
         fanService.create(TEST_FAN_NAME, TEST_FAN_EMAIL, dateBirth, TEST_FAN_TEAM);
         fanService.create("duplicatedFan", TEST_FAN_EMAIL, dateBirth, "Barcelona");

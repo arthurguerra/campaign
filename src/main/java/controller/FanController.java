@@ -1,6 +1,7 @@
 package controller;
 
 import core.Fan;
+import exceptions.FanAlreadyExistsAndAlreadyHasCampaignsException;
 import exceptions.FanAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import service.FanService;
 
 /**
- * Campaign controller.
+ * Fan controller.
  */
 @RestController
 @RequestMapping( value = "/fan" )
@@ -20,7 +21,8 @@ public class FanController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createCampaign(@RequestBody Fan newFan) throws FanAlreadyExistsException {
+    public void createFan(@RequestBody Fan newFan) throws FanAlreadyExistsException,
+            FanAlreadyExistsAndAlreadyHasCampaignsException {
         fanService.create(null, null, null, null);
     }
 
