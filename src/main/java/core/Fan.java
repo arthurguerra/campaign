@@ -9,6 +9,10 @@ public class Fan {
     private String name, email, team;
     private Date dateBirth;
 
+    public Fan() {
+        // empty constructor
+    }
+
     public Fan(String name, String email, String team, Date dateBirth) {
         this.name = name;
         this.email = email;
