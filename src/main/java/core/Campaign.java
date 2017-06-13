@@ -90,4 +90,20 @@ public class Campaign {
     public String toString() {
         return String.format("%s (%s - %s)", name, dateStart, dateEnd);
     }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Campaign)) {
+            return false;
+        }
+
+        Campaign c = (Campaign) o;
+
+        return this.name.equals(c.getName());
+    }
 }
