@@ -1,6 +1,7 @@
 package app;
 
 import core.Campaign;
+import exceptions.FanAlreadyExistsAndAlreadyHasCampaignsException;
 import exceptions.FanAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,11 @@ public class GlobalControllerExceptionHandler {
 
     @ExceptionHandler(value = FanAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public List<Campaign> handleFanAlreadyExists() {
+    public List<Campaign> handleFanAlreadyExistsWithoutCampaigns() {
         return campaignService.findAllValidCampaigns();
     }
+
+    @ExceptionHandler(value = FanAlreadyExistsAndAlreadyHasCampaignsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public void handleFanAlreadyExistsWithCampaigns() { }
 }

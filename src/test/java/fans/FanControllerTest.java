@@ -4,6 +4,7 @@ import app.Application;
 import app.FanController;
 import app.GlobalControllerExceptionHandler;
 import core.Campaign;
+import exceptions.FanAlreadyExistsAndAlreadyHasCampaignsException;
 import exceptions.FanAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,8 +66,7 @@ public class FanControllerTest {
         List<Campaign> campaigns = new ArrayList<>();
         campaigns.add(testCampain);
 
-        when(mockGlobalControllerExceptionHandler.handleFanAlreadyExists()).thenReturn(campaigns);
-
+        when(mockGlobalControllerExceptionHandler.handleFanAlreadyExistsWithoutCampaigns()).thenReturn(campaigns);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class FanControllerTest {
     }
 
     @Test
-    public void existingUser() throws Exception {
+    public void existingUserWithoutCampaigns() throws Exception {
         when(mockFanService.create(anyObject(), anyObject(), anyObject(), anyObject()))
                 .thenThrow(new FanAlreadyExistsException());
 
@@ -113,6 +113,26 @@ public class FanControllerTest {
 
         verify(mockFanService, times(1)).create(anyObject(), anyObject(), anyObject(), anyObject());
         verify(mockFanService, only()).create(anyObject(), anyObject(), anyObject(), anyObject());
+    }
 
+    @Test
+    public void existingUserWithCampaigns() throws Exception {
+        when(mockFanService.create(anyObject(), anyObject(), anyObject(), anyObject()))
+                .thenThrow(new FanAlreadyExistsAndAlreadyHasCampaignsException());
+
+        String userJson = "{" +
+                "\"name\":\"John Smith\"," +
+                "\"email\":\"johnsmith@gmail.com\", "+
+                "\"dateBirth\":\"1980-01-01\", " +
+                "\"team\":\"Real Madrid\"" +
+                "}";
+
+        mockMvc.perform(post("/fan")
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .content(userJson.getBytes())
+        ).andExpect(status().isConflict());
+
+        verify(mockFanService, times(1)).create(anyObject(), anyObject(), anyObject(), anyObject());
+        verify(mockFanService, only()).create(anyObject(), anyObject(), anyObject(), anyObject());
     }
 }

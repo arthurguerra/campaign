@@ -41,8 +41,10 @@ public class FanServiceImpl implements FanService {
 
             Fan f = fansMap.get(email);
             if (f.hasCampaigns()) {
+                logger.info("Fan {} already associated with one or more campaigns", email);
                 throw new FanAlreadyExistsAndAlreadyHasCampaignsException();
             } else {
+                logger.info("Fan {} not associated with campaigns yet", email);
                 throw new FanAlreadyExistsException();
             }
         }
