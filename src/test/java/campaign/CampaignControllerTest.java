@@ -1,7 +1,7 @@
 package campaign;
 
 import app.Application;
-import controller.CampaignController;
+import app.CampaignController;
 import core.Campaign;
 import org.junit.Before;
 import org.junit.Test;

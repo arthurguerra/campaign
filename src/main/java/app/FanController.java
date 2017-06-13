@@ -1,4 +1,4 @@
-package controller;
+package app;
 
 import core.Fan;
 import exceptions.FanAlreadyExistsAndAlreadyHasCampaignsException;

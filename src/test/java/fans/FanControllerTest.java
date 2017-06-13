@@ -1,8 +1,8 @@
 package fans;
 
 import app.Application;
-import controller.FanController;
-import controller.GlobalControllerExceptionHandler;
+import app.FanController;
+import app.GlobalControllerExceptionHandler;
 import core.Campaign;
 import exceptions.FanAlreadyExistsException;
 import org.junit.Before;
