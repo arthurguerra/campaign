@@ -1,5 +1,10 @@
 package core;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import utils.DateDeserializer;
+import utils.DateSerializer;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,8 +14,11 @@ import java.util.Set;
  */
 public class Fan {
     private String name, email, team;
-    private Date dateBirth;
     private Set<Campaign> campaigns;
+
+    @JsonSerialize(using = DateSerializer.class)
+    @JsonDeserialize(using = DateDeserializer.class)
+    private Date dateBirth;
 
     public Fan() {
         // empty constructor
