@@ -29,5 +29,4 @@ public interface FanService {
      * Deletes all fans.
      */
     void deleteAll();
-
 }

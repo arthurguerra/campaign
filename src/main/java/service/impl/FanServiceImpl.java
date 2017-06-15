@@ -22,6 +22,8 @@ public class FanServiceImpl implements FanService {
     private static final Logger logger = LoggerFactory.getLogger(FanServiceImpl.class);
 
     private Map<String, Fan> fansMap;
+    private Map<String, Long> teamsMap;
+    private long lastTeamId;
 
     private final CampaignService campaignService;
 
@@ -29,6 +31,8 @@ public class FanServiceImpl implements FanService {
     public FanServiceImpl(CampaignService campaignService) {
         this.campaignService = campaignService;
         fansMap = new HashMap<>();
+        teamsMap = new HashMap<>();
+        lastTeamId = 0;
     }
 
     @Override
@@ -49,14 +53,40 @@ public class FanServiceImpl implements FanService {
             }
         }
 
+        if (!teamsMap.containsKey(team)) {
+            teamsMap.put(team, ++lastTeamId);
+        }
+
         Fan newFan = new Fan(name, email, team, dateBirth);
         fansMap.put(email, newFan);
 
+        registerFanOnCampaigns(email, team);
+
         return newFan;
+    }
+
+    private void registerFanOnCampaigns(String email, String team) {
+        if (!teamsMap.containsKey(team)) {
+            logger.error("Team does not exist");
+            return;
+        }
+
+        if (!fansMap.containsKey(email)) {
+            logger.error("Fan does not exist");
+            return;
+        }
+
+        Fan f = fansMap.get(email);
+        long teamId = teamsMap.get(team);
+
+        campaignService.findAllValidCampaigns().stream()
+                .filter(c -> c.getTeamId() == teamId)
+                .forEach(f::addCampaign);
     }
 
     @Override
     public void deleteAll() {
         fansMap.clear();
     }
+
 }

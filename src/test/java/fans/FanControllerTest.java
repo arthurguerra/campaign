@@ -70,8 +70,8 @@ public class FanControllerTest {
     }
 
     @Test
-    public void createBrandNewUser() throws Exception {
-        String userJson = "{" +
+    public void createBrandNewFan() throws Exception {
+        String fanJson = "{" +
                 "\"name\":\"John Smith\"," +
                 "\"email\":\"johnsmith@gmail.com\", "+
                 "\"dateBirth\":\"1980-01-01\", " +
@@ -80,7 +80,7 @@ public class FanControllerTest {
 
         mockMvc.perform(post("/fan")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(userJson.getBytes())
+                .content(fanJson.getBytes())
         ).andExpect(status().isCreated());
 
         verify(mockFanService, times(1)).create(anyObject(), anyObject(), anyObject(), anyObject());
@@ -88,11 +88,11 @@ public class FanControllerTest {
     }
 
     @Test
-    public void existingUserWithoutCampaigns() throws Exception {
+    public void existingFanWithoutCampaigns() throws Exception {
         when(mockFanService.create(anyObject(), anyObject(), anyObject(), anyObject()))
                 .thenThrow(new FanAlreadyExistsException());
 
-        String userJson = "{" +
+        String fanJson = "{" +
                 "\"name\":\"John Smith\"," +
                 "\"email\":\"johnsmith@gmail.com\", "+
                 "\"dateBirth\":\"1980-01-01\", " +
@@ -101,7 +101,7 @@ public class FanControllerTest {
 
         mockMvc.perform(post("/fan")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(userJson.getBytes())
+                .content(fanJson.getBytes())
         ).andExpect(status().isConflict())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$", hasSize(1)))
@@ -116,11 +116,11 @@ public class FanControllerTest {
     }
 
     @Test
-    public void existingUserWithCampaigns() throws Exception {
+    public void existingFanWithCampaigns() throws Exception {
         when(mockFanService.create(anyObject(), anyObject(), anyObject(), anyObject()))
                 .thenThrow(new FanAlreadyExistsAndAlreadyHasCampaignsException());
 
-        String userJson = "{" +
+        String fanJson = "{" +
                 "\"name\":\"John Smith\"," +
                 "\"email\":\"johnsmith@gmail.com\", "+
                 "\"dateBirth\":\"1980-01-01\", " +
@@ -129,7 +129,7 @@ public class FanControllerTest {
 
         mockMvc.perform(post("/fan")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(userJson.getBytes())
+                .content(fanJson.getBytes())
         ).andExpect(status().isConflict());
 
         verify(mockFanService, times(1)).create(anyObject(), anyObject(), anyObject(), anyObject());

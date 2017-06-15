@@ -1,6 +1,8 @@
 package core;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Fan's class representation.
@@ -8,6 +10,7 @@ import java.util.Date;
 public class Fan {
     private String name, email, team;
     private Date dateBirth;
+    private Set<Campaign> campaigns;
 
     public Fan() {
         // empty constructor
@@ -18,6 +21,16 @@ public class Fan {
         this.email = email;
         this.team = team;
         this.dateBirth = dateBirth;
+        campaigns = new HashSet<>();
+
+    }
+
+    public Set<Campaign> getCampaigns() {
+        return campaigns;
+    }
+
+    public void setCampaigns(Set<Campaign> campaigns) {
+        this.campaigns = campaigns;
     }
 
     public String getName() {
@@ -69,6 +82,18 @@ public class Fan {
     }
 
     public boolean hasCampaigns() {
-        return true;
+        return campaigns.size() > 0;
+    }
+
+    /**
+     * Adds a new campaign to the set, if it is not already present
+     * @param c
+     */
+    public void addCampaign(Campaign c) {
+        if (campaigns.contains(c)) {
+            return;
+        }
+
+        campaigns.add(c);
     }
 }

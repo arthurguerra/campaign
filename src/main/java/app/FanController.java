@@ -23,7 +23,7 @@ public class FanController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createFan(@RequestBody Fan newFan) throws FanAlreadyExistsException,
             FanAlreadyExistsAndAlreadyHasCampaignsException {
-        fanService.create(null, null, null, null);
+        fanService.create(newFan.getName(), newFan.getEmail(), newFan.getDateBirth(), newFan.getTeam());
     }
 
 }
