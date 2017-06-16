@@ -2,9 +2,7 @@ package fans;
 
 import app.Application;
 import core.Campaign;
-import core.Fan;
 import exceptions.FanAlreadyExistsAndAlreadyHasCampaignsException;
-import exceptions.FanAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +24,6 @@ import java.util.List;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 /**
@@ -48,7 +45,7 @@ public class FanServiceTest {
     private FanService fanService;
 
     @Before
-    public void setUp() throws FanAlreadyExistsException {
+    public void setUp() {
         fanService = new FanServiceImpl(campaignService);
 
         fanService.deleteAll();
@@ -60,33 +57,22 @@ public class FanServiceTest {
     }
 
     @Test
-    public void createFan() throws ParseException, FanAlreadyExistsException,
+    public void createFan() throws ParseException,
             FanAlreadyExistsAndAlreadyHasCampaignsException {
         Date dateBirth = dateFormat.parse("1980-01-01");
-        Fan fan = fanService.create(TEST_FAN_NAME, TEST_FAN_EMAIL, dateBirth, TEST_FAN_TEAM);
+        List<Campaign> campaigns = fanService.create(TEST_FAN_NAME, TEST_FAN_EMAIL, dateBirth, TEST_FAN_TEAM);
 
-        assertNotNull(fan);
-        assertEquals(TEST_FAN_NAME, fan.getName());
-        assertEquals(TEST_FAN_EMAIL, fan.getEmail());
-        assertEquals(TEST_FAN_TEAM, fan.getTeam());
-        assertTrue(DateUtils.datesAreTheSame(dateBirth, fan.getDateBirth()));
-    }
-
-    @Test(expected = FanAlreadyExistsException.class)
-    public void fanAlreadyEnrolledWithNoCampaigns() throws FanAlreadyExistsAndAlreadyHasCampaignsException,
-            FanAlreadyExistsException, ParseException {
-        when(campaignService.findAllValidCampaigns()).thenReturn(new ArrayList<>()); // there are no campaigns
-        Date dateBirth = dateFormat.parse("1994-12-12");
-        fanService.create(TEST_FAN_NAME, TEST_FAN_EMAIL, dateBirth, TEST_FAN_TEAM);
-        fanService.create("Lionel Messi", TEST_FAN_EMAIL, dateBirth, "Barcelona");
+        assertNotNull(campaigns);
+        assertEquals("testCampaign", campaigns.get(0).getName());
+        assertEquals(1, campaigns.get(0).getTeamId());
     }
 
     @Test(expected = FanAlreadyExistsAndAlreadyHasCampaignsException.class)
-    public void fanAlreadyEnrolledWithOneOrMoreCampaigns() throws ParseException, FanAlreadyExistsException,
+    public void fanAlreadyEnrolledWithOneOrMoreCampaigns() throws ParseException,
             FanAlreadyExistsAndAlreadyHasCampaignsException {
         Date dateBirth = dateFormat.parse("1994-12-12");
         fanService.create(TEST_FAN_NAME, TEST_FAN_EMAIL, dateBirth, TEST_FAN_TEAM);
-        fanService.create("Lionel Messi", TEST_FAN_EMAIL, dateBirth, "Barcelona");
+        fanService.create(TEST_FAN_NAME, TEST_FAN_EMAIL, dateBirth, "Barcelona");
 
     }
 }

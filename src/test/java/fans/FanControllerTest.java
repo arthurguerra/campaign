@@ -6,7 +6,6 @@ import app.GlobalControllerExceptionHandler;
 import core.Campaign;
 import core.Fan;
 import exceptions.FanAlreadyExistsAndAlreadyHasCampaignsException;
-import exceptions.FanAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,9 +59,10 @@ public class FanControllerTest {
     private FanController fanController;
 
     private String fanJson;
+    private List<Campaign> campaigns;
 
     @Before
-    public void setUp() throws FanAlreadyExistsAndAlreadyHasCampaignsException, FanAlreadyExistsException, ParseException {
+    public void setUp() throws FanAlreadyExistsAndAlreadyHasCampaignsException, ParseException {
         MockitoAnnotations.initMocks(this);
 
         this.mockMvc = MockMvcBuilders.standaloneSetup(fanController)
@@ -74,59 +74,32 @@ public class FanControllerTest {
         fanJson = getFanJson();
 
         Campaign testCampain = new Campaign(TEST_CAMPAIGN_NAME, 1, testDate, testDate);
-        List<Campaign> campaigns = new ArrayList<>();
+        campaigns = new ArrayList<>();
         campaigns.add(testCampain);
-
-        when(mockGlobalControllerExceptionHandler.handleFanAlreadyExistsWithoutCampaigns()).thenReturn(campaigns);
-        //doNothing().when(mockFanService).create(anyObject(), anyObject(), anyObject(), anyObject());
 
         Fan f = new Fan(TEST_FAN_NAME, TEST_FAN_EMAIL, TEST_FAN_TEAM, dateFormat.parse(TEST_FAN_DATE_BIRTH));
         f.addCampaign(testCampain);
 
-        when(mockFanService.find(anyObject())).thenReturn(f);
+        when(mockGlobalControllerExceptionHandler.handleFanAlreadyExistsWithCampaigns()).thenCallRealMethod();
     }
 
     @Test
     public void createBrandNewFan() throws Exception {
+        when(mockFanService.create(anyObject(), anyObject(), anyObject(), anyObject())).thenReturn(campaigns);
+
         mockMvc.perform(post("/fan")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(fanJson.getBytes())
         ).andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.name", is(TEST_FAN_NAME)))
-                .andExpect(jsonPath("$.email", is(TEST_FAN_EMAIL)))
-                .andExpect(jsonPath("$.dateBirth", is(TEST_FAN_DATE_BIRTH)))
-                .andExpect(jsonPath("$.team", is(TEST_FAN_TEAM)))
-                .andExpect(jsonPath("$.campaigns", hasSize(1)))
-                .andExpect(jsonPath("$.campaigns[0].name", is(TEST_CAMPAIGN_NAME)))
-                .andExpect(jsonPath("$.campaigns[0].teamId").isNotEmpty())
-                .andExpect(jsonPath("$.campaigns[0].dateStart", is(testDateStr)))
-                .andExpect(jsonPath("$.campaigns[0].dateEnd", is(testDateStr)))
-                .andExpect(jsonPath("$.campaigns[0].id").isNotEmpty());
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].name", is(TEST_CAMPAIGN_NAME)))
+                .andExpect(jsonPath("$[0].teamId").isNotEmpty())
+                .andExpect(jsonPath("$[0].dateStart", is(testDateStr)))
+                .andExpect(jsonPath("$[0].dateEnd", is(testDateStr)))
+                .andExpect(jsonPath("$[0].id").isNotEmpty());
 
         verify(mockFanService, times(1)).create(anyObject(), anyObject(), anyObject(), anyObject());
-        verify(mockFanService, times(1)).find(anyObject());
-    }
-
-    @Test
-    public void existingFanWithoutCampaigns() throws Exception {
-        when(mockFanService.create(anyObject(), anyObject(), anyObject(), anyObject()))
-                .thenThrow(new FanAlreadyExistsException());
-
-        mockMvc.perform(post("/fan")
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(fanJson.getBytes())
-        ).andExpect(status().isConflict())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$[0].id").isNotEmpty())
-            .andExpect(jsonPath("$[0].name", is(TEST_CAMPAIGN_NAME)))
-            .andExpect(jsonPath("$[0].teamId", is(1)))
-            .andExpect(jsonPath("$[0].dateStart", is(testDateStr)))
-            .andExpect(jsonPath("$[0].dateEnd", is(testDateStr)));
-
-        verify(mockFanService, times(1)).create(anyObject(), anyObject(), anyObject(), anyObject());
-        verify(mockFanService, only()).create(anyObject(), anyObject(), anyObject(), anyObject());
     }
 
     @Test
@@ -137,7 +110,8 @@ public class FanControllerTest {
         mockMvc.perform(post("/fan")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(fanJson.getBytes())
-        ).andExpect(status().isConflict());
+        ).andExpect(status().isConflict())
+            .andExpect(content().string("Fan already exists"));
 
         verify(mockFanService, times(1)).create(anyObject(), anyObject(), anyObject(), anyObject());
         verify(mockFanService, only()).create(anyObject(), anyObject(), anyObject(), anyObject());

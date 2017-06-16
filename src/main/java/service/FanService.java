@@ -1,10 +1,11 @@
 package service;
 
+import core.Campaign;
 import core.Fan;
 import exceptions.FanAlreadyExistsAndAlreadyHasCampaignsException;
-import exceptions.FanAlreadyExistsException;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Fan Service interface.
@@ -17,13 +18,12 @@ public interface FanService {
      * @param email fan's email
      * @param dateBirth fan's date of birth
      * @param team fan's favorite team
-     * @return Fan object just created
-     * @throws FanAlreadyExistsException if the fan's email already exists
+     * @return List of new campaigns associated to the fan
      * @throws FanAlreadyExistsAndAlreadyHasCampaignsException if the fan's email already exists and this fan
      *  is already associated with one more campaigns
      */
-    Fan create(String name, String email, Date dateBirth, String team)
-            throws FanAlreadyExistsException, FanAlreadyExistsAndAlreadyHasCampaignsException;
+    List<Campaign> create(String name, String email, Date dateBirth, String team)
+            throws FanAlreadyExistsAndAlreadyHasCampaignsException;
 
     /**
      * Deletes all fans.
