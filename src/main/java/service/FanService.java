@@ -29,4 +29,11 @@ public interface FanService {
      * Deletes all fans.
      */
     void deleteAll();
+
+    /**
+     * Finds a fan by email
+     * @param email fan's email
+     * @return {@link Fan} instance for the corresponding the email
+     */
+    Fan find(String email);
 }

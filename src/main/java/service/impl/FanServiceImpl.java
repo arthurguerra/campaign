@@ -89,4 +89,8 @@ public class FanServiceImpl implements FanService {
         fansMap.clear();
     }
 
+    @Override
+    public Fan find(String email) {
+        return fansMap.get(email);
+    }
 }

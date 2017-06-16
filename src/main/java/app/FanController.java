@@ -21,9 +21,10 @@ public class FanController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createFan(@RequestBody Fan newFan) throws FanAlreadyExistsException,
+    public Fan createFan(@RequestBody Fan newFan) throws FanAlreadyExistsException,
             FanAlreadyExistsAndAlreadyHasCampaignsException {
         fanService.create(newFan.getName(), newFan.getEmail(), newFan.getDateBirth(), newFan.getTeam());
+        return fanService.find(newFan.getEmail());
     }
 
 }
